@@ -2,6 +2,9 @@
   "main": "index.js",
   "dependencies": {
     "jsondiffpatch": "^0.3.11",
-    "automerge": "0.12.1"
+    "automerge": "latest"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }

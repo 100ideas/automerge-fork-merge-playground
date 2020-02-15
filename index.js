@@ -13,7 +13,6 @@ strategy - probably smart for txt editer, not smart for data-
 processing workflows.
 ==========================================================`
 
-console.log(
 
 const jsondiffpatch = JsonDiffPatch.create({
   // used to match objects when diffing arrays, by default only === operator is used
