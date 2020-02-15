@@ -32,11 +32,9 @@ const jsondiffpatch = JsonDiffPatch.create({
 })
 
 //====================== helpers =====================================
-const pipe = (...fns) => x => fns.reduce( (v, f) => f(v), x );
 const diff = (_old, _new) =>
   // JsonDiffPatch.formatters.console.format(jsondiffpatch.diff(_old, _new))
   JsonDiffPatch.formatters.jsonpatch.format(jsondiffpatch.diff(_old, _new))
-
 
 function log(newline = true) {
   let args = [...arguments]
@@ -48,7 +46,6 @@ function log(newline = true) {
 }
 
 // automerge helpers
-// 
 // also see https://github.com/canadaduane/delta-agent/blob/master/src/diff.js
 function logchanges(doc, msg = '') {
   let {actor, message} = getChange(doc, -1)
@@ -74,7 +71,6 @@ function getHistory(doc, idx = 0) {
   // history.map(({change, snapshot}, idx) => console.log(idx +':\nchange', change, '\nsnaps', snapshot))
   return history[idx]
 }
-function getChange(doc, idx = 0) {return getHistory(doc, idx)['change']}
 function getSnapshot(doc, idx = 0) {return getHistory(doc, idx)['snapshot']}
 
 function getAllConflicts(doc) {
@@ -85,10 +81,12 @@ function getAllConflicts(doc) {
   }
   return conflicts
 }
-//===============================================================
 
-let a1, a2, a3,
-    b0, b1, b2, b3;
+
+//===============================================================
+const pipe = (...fns) => x => fns.reduce( (v, f) => f(v), x );
+
+function getChange(doc, idx = 0) {return getHistory(doc, idx)['change']}
 
 function amchange(change, olddoc = am.init(), msg = '') {
   // only for objects right now
@@ -117,7 +115,10 @@ function amchange(change, olddoc = am.init(), msg = '') {
   )
   return newdoc
 }
+//===============================================================
 
+let a1, a2, a3,
+    b0, b1, b2, b3;
 
 a1 = amchange({verz: "1", data: [1,2,3], branch: 'master'}, "master:v1")
 a2 = amchange({verz: "2", data: [1,2,3,4], msg: 'cat'}, a1, "master:v2")
@@ -147,7 +148,7 @@ b2 = amchange({verz: "4", data: [2,3,4], msg: 'fork1 msg1'}, b1, 'fork1:v2')
 // so what will happen if we updated b2 by merging changes from a3?
 log('======================= b2_merged_a3 ====================')
 log('b2', b2)
-log('getHistory b2', am.getHistory(b2)[0])
+log('getHistory b2', am.getHistory(b2)[0].change)
 log('getSnapshot(b2)', getSnapshot(b2, -1))
 log('a3', a3)
 // am.getHistory(b0).map(({change, snapshot}) => console.log("change:", change, "\nsnap:", snapshot))
